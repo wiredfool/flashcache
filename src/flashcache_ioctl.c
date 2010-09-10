@@ -224,8 +224,10 @@ flashcache_del_all_pids(struct cache_c *dmc, int which_list, int force)
 		if (force == 0) {
 #if LINUX_VERSION_CODE <= KERNEL_VERSION(2,6,24)
 			task = find_task_by_pid_type(PIDTYPE_PID, node->pid);
-#else
+#elseif LINUX_VERSION_CODE <= KERNEL_VERSION(2,6,31)
 			task = find_task_by_vpid(node->pid);
+#else 
+			task = pid_task( find_vpid(node->pid), PIDTYPE_PID );
 #endif
 			/*
 			 * If that task was found, don't remove it !
